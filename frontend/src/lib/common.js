@@ -175,8 +175,10 @@ export async function updateBook(data, id) {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
+    console.log(`Je suis dans le try : ${newBook}`);
     return newBook;
   } catch (err) {
+    console.log('Je suis dans le catch');
     console.error(err);
     return { error: true, message: err.message };
   }

@@ -57,6 +57,7 @@ exports.modifyBook = (req, res, next) => {
 };
 
 exports.deleteBook = (req, res, next) => {
+  console.error("delete")
   Book.findOne({ _id: req.params.id})
       .then(book => {
           if (book.userId != req.auth.userId) {
@@ -107,6 +108,7 @@ exports.getTopRatedBook = (req, res, next) => {
 };
 
 exports.setRatingBook = (req, res, next) => {
+  console.error("note")
   const { userId, rating } = req.body;
 
   // Vérifier si la note est valide (comprise entre 0 et 5)
