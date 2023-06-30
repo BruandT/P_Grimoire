@@ -1,3 +1,4 @@
+const { Long } = require('mongodb');
 const Book = require('../models/Book');
 const fs = require('fs');
 
@@ -108,42 +109,41 @@ exports.getTopRatedBook = (req, res, next) => {
 };
 
 exports.setRatingBook = (req, res, next) => {
-  console.error("note")
   const { userId, rating } = req.body;
-
+  console.log(rating);
   // Vérifier si la note est valide (comprise entre 0 et 5)
-  if (rating < 0 || rating > 5) {
-    return res.status(400).json({ error: 'La note doit être comprise entre 0 et 5.' });
-  }
+  // if (grade < 0 && grade >= 5) {
+  //   return res.status(400).json({ error: 'La note doit être comprise entre 0 et 5.' });
+  // }
 
-  // Rechercher le livre correspondant à l'ID fourni
-  Book.findById(req.params.bookId)
-    .then(book => {
-      if (!book) {
-        return res.status(404).json({ error: 'Livre non trouvé.' });
-      }
+  // // Rechercher le livre correspondant à l'ID fourni
+  // Book.findOne({ _id: req.params.id})  
+  //   .then(book => {
+  //     if (!book) {
+  //       return res.status(404).json({ error: 'Livre non trouvé.' });
+  //     }
+  //     // Vérifier si l'utilisateur a déjà noté ce livre
+  //     const userRating = book.ratings.find(grade => grade.userId === userId);
+  //     if (userRating) {
+  //       return res.status(400).json({ error: 'Vous avez déjà noté ce livre.' });
+  //     }
+  //     console.log({ userId, grade });
+  //     // Ajouter la note et l'ID de l'utilisateur au tableau "ratings" du livre
+  //     book.ratings.push({ userId, grade });
+  //     // console.log(book.ratings);
 
-      // Vérifier si l'utilisateur a déjà noté ce livre
-      if (book.rating.some(entry => entry.userId === userId)) {
-        return res.status(400).json({ error: 'L\'utilisateur a déjà noté ce livre.' });
-      }
+  //     // Mettre à jour la note moyenne "averageRating"
+  //     const totalRating = book.ratings.reduce((sum, grade) => sum + grade.grade, 0);
+  //     console.log(totalRating);
+  //     book.averageRating = totalRating / book.ratings.length;
 
-      // Ajouter la note à la liste des notes du livre
-      book.rating.push({ userId, rating });
-
-      // Mettre à jour la note moyenne
-      const totalRatings = book.rating.length;
-      const sumRatings = book.rating.reduce((sum, entry) => sum + entry.rating, 0);
-      book.averageRating = sumRatings / totalRatings;
-
-      // Enregistrer les modifications du livre
-      return book.save();
-    })
-    .then(book => {
-      // Réponse réussie avec le livre mis à jour
-      res.json({ message: 'Note définie avec succès.', book });
-    })
-    .catch(error => {
-      res.status(400).json({ error });
-    });
+  //     return book.save();
+  //   })
+  //   .then(book => {
+  //     // Réponse réussie avec le livre mis à jour
+  //     res.json({ message: 'Note définie avec succès.', book });
+  //   })
+  //   .catch(error => {
+  //     res.status(400).json({ error });
+  //   });
 };
