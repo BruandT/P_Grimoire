@@ -8,16 +8,19 @@ exports.createBook = (req, res, next) => {
   // Suppression des propriétés "_id" et "_userId" de l'objet bookObject
   delete bookObject._id;
   delete bookObject._userId;  
+  // Nouveau nom de fichier image
+  const newFilename = `${req.file.filename.split('.')[0]}.webp`;
   // Création d'une nouvelle instance de Book avec les données fournies
   const book= new Book({
     ...bookObject,
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    userId: req.auth.userId,
+    imageUrl: `${req.protocol}://${req.get('host')}/${req.file.destination}/modified_${newFilename}`
   });
   // Enregistrement du livre dans la base de données
   book.save()
   .then(() => {
     // Envoi d'une réponse avec un code de statut 201 (Créé) et un message de succès
-    res.status(201).json({message: 'Livre enregistré !'});
+    res.status(201).json({book});
   })
   .catch(error => {
     // Envoi d'une réponse avec un code de statut 400 (Requête incorrecte) et l'erreur rencontrée
@@ -41,11 +44,13 @@ exports.getBook = (req, res, next) => {
 
 // Function modification d'un livre
 exports.modifyBook = (req, res, next) => {
+  // Nouveau nom de fichier image
+  const newFilename = `${req.file.filename.split('.')[0]}.webp`;
   // Crée un nouvel objet 'bookObject' en utilisant les données de la requête
   // Si un fichier est inclus dans la requête, l'URL de l'image est également ajoutée à 'imageUrl'
   const bookObject = req.file ? {
     ...JSON.parse(req.body.book),
-    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    imageUrl: `${req.protocol}://${req.get('host')}/${req.file.destination}/modified_${newFilename}`
   } : { ...req.body };
   // Supprime la clé '_userId' de 'bookObject'
   delete bookObject._userId;
