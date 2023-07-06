@@ -1,6 +1,7 @@
 const http = require('http');
 const app = require('./app');
-
+const bodyParser = require('body-parser');
+app.use(bodyParser.json({ limit: '1mb' }));
 const normalizePort = val => {
   const port = parseInt(val, 10);
 
@@ -34,7 +35,6 @@ const errorHandler = error => {
       throw error;
   }
 };
-
 const server = http.createServer(app);
 
 server.on('error', errorHandler);
