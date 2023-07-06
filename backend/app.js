@@ -2,15 +2,15 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
+
 dotenv.config();
-const dbUser = process.env.DB_USER;
-const dbPwd = process.env.DB_PASSWORD;
 
 const bookRoutes = require('./routes/book');
 const userRoutes = require('./routes/user');
 
 const app = express();
-mongoose.connect(`mongodb+srv://${dbUser}:${dbPwd}@cluster0.zgdpmjp.mongodb.net/?retryWrites=true&w=majority`,
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.zgdpmjp.mongodb.net/?retryWrites=true&w=majority`,
     {
         useNewUrlParser: true,
         useUnifiedTopology: true
@@ -26,8 +26,6 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
-
-
 app.use('/api/books', bookRoutes);
 app.use('/api/auth', userRoutes);
 app.use('/images', express.static(path.join(__dirname, 'images')));
